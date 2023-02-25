@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+</head>
+<body>
+    <nav class="navbar bg-dark" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand">Teacher Portal</a>
+          <form class="d-flex" role="search">
+            <a class="navbar-brand" href="./index.html">Signup</a>
+            <a class="navbar-brand" href="./login.html">Login</a>
+          </form>
+        </div>
+      </nav>
+
+
+
+    <p class="error"></p>
+
+    <form class="signup margin">
+        <legend>Teachers Signup</legend>
+        <div class="mb-3">
+          <input type="text" id="name" class="form-control" value="Full Name" style="border-radius: 0 !important;">
+        </div>
+
+        <div class="mb-3">
+            <input type="text" id="email" class="form-control" value="Email" style="border-radius: 0 !important;">
+          </div>
+
+        <div class="mb-3">
+          <input type="text" id="password" class="form-control" value="Password" style="border-radius: 0 !important;">
+        </div>
+
+        <div class="mb-3">
+            <input type="text" id="c_password" class="form-control" value="Confirm Password" style="border-radius: 0 !important;">
+          </div>
+          <div class="d-grid gap-2 col-1 ">
+            <button type="submit" class="btn btn-dark" style="border-radius: 0 !important;">SignUp</button>
+          </div>
+        
+      </form>
+
+    <script>
+        let Signup_Form = document.querySelector('.signup');
+
+        let input_name = document.querySelector('#name');
+        let input_password = document.querySelector('#password');
+        let input_confirm_password = document.querySelector('#c_password');
+        let input_email = document.querySelector('#email');
+
+        let error = document.querySelector('.error');
+
+        Signup_Form.addEventListener('submit', validateForm);
+
+        let arr = []   //creating empty array
+          
+
+        function validateForm(e){
+            e.preventDefault();
+            let name = input_name.value;
+            let password = input_password.value;
+            let con_password = input_confirm_password.value;
+            let email = input_email.value;
+
+            
+
+            
+
+            if(checkNumberOfWords(name) <2){
+                error.innerHTML = 'Enter your Full Name minimum 2 words required'
+            }
+
+            else if(checkemail(email) == true){
+                error.innerHTML = 'email is already exist please use new email'
+            }
+
+            else if(checkpassword(password, name) == false){
+                error.innerHTML = 'password must contain minimum one capital later, one small later , one number and one special character'
+            }
+
+            else if(password  !== con_password){
+                error.innerHTML = 'Please enter correct password, Password and Confirm Password must be same'
+            }
+
+            else if(email.indexOf('@') == -1){
+                error.innerHTML = 'Email must contain @'
+            }
+
+            
+
+
+            else{
+                error.innerHTML = 'Form sumbmit sucssfully'
+                
+                arr = JSON.parse(localStorage.getItem("User"))?JSON.parse(localStorage.getItem("User")):[]
+                
+                let obj = {name,  password, email};
+                //let obj = {id: id++, name, password, email};
+                arr.push(obj);
+                // console.log(arr);
+
+                input_name.value = '';
+                input_password.value = '';
+                input_confirm_password.value = '';
+                input_email.value = '';
+
+                //local storage
+                localStorage.setItem("User", JSON.stringify(arr)) //converting obj to json string
+
+                //Naigate to login Page
+               window.location.href = "/login.html"
+                
+
+            }
+
+        }
+
+       function checkNumberOfWords(name){
+
+            name = name.trim();
+            let countwords = name.split(' ');
+            return countwords.length
+        }
+
+        function checkpassword(password, name){
+            let cl = 0, sl = 0, num = 0, sc = 0
+
+            for (let t of password){
+                if(t>="A" && t<="Z"){
+                    cl++;
+                }
+                else if(t>="a" && t<="z"){
+                    sl++;
+                }
+                else if(t>="0" && t<="9"){
+                    num++;
+                }
+
+                else{
+                    sc++;
+                }
+            }
+
+            if(cl>=1 && sl>=1 && num>=1 && sc>=1 && password!=name){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+
+        //if email is already stored before get error 
+        function checkemail(email){
+            for ( t of arr) {
+                if(t.email == email){
+                    return true
+                }                
+            }
+            return false
+        }
+
+
+
+    </script>
+
+</body>
+</html>
